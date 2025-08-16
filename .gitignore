@@ -1,0 +1,10 @@
+/android/.gradle
+/ios/.generated
+/build
+/.dart_tool
+/.idea
+/.vscode
+*.iml
+*.lock
+.env
+/pubspec.lock

@@ -1,4 +1,3 @@
-import 'dart:js_interop';
 
 import 'package:news/src/resources/repository.dart';
 import 'package:path/path.dart';
@@ -11,12 +10,13 @@ import '../models/item_models.dart';
 
 class NewsDbProvider implements Source, Cache{
   late Database Db;
-  Future<List<int>>? fetchTopId(){
-    return null;
+
+  Future<List<int>> fetchTopId()async{
+    return [];
   }
 
 
-  void init ()async{
+  Future<void>  init ()async{
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     final path= join(documentDirectory.path,"items.db");
     Db= await  openDatabase(
@@ -43,7 +43,7 @@ class NewsDbProvider implements Source, Cache{
       }
     );
   }
-Future <ItemModel?> fetchItem (int id) async {
+  Future<ItemModel?> fetchItem (int id) async {
     final maps= await Db.query(
       "items",
       columns: null,

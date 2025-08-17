@@ -15,7 +15,7 @@ List<Cache> caches=<Cache>[
 ];
 
 
-Future <List<int>>? fetchTopId(){
+Future <List<int>> fetchTopId(){
   return sources[1].fetchTopId();
 
   }
@@ -42,7 +42,7 @@ Future <List<int>>? fetchTopId(){
 }
 
 abstract class Source {
- Future<List<int>>? fetchTopId();
+ Future<List<int>> fetchTopId();
   Future <ItemModel?> fetchItem(int id);
 }
 abstract class Cache{

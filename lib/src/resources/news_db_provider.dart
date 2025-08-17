@@ -1,30 +1,26 @@
-
 import 'package:news/src/resources/repository.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:io';
-import 'dart:async';
-import 'repository.dart';
 import '../models/item_models.dart';
 
-class NewsDbProvider implements Source, Cache{
-  late Database Db;
+class NewsDbProvider implements Source, Cache {
+  late Database db;
 
-  Future<List<int>> fetchTopId()async{
-    return [];
+  NewsDbProvider() {
+    init();
   }
 
-
-  Future<void>  init ()async{
-    Directory documentDirectory = await getApplicationDocumentsDirectory();
-    final path= join(documentDirectory.path,"items.db");
-    Db= await  openDatabase(
-        path,
+  Future<void> init() async {
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    final path = join(documentsDirectory.path, "items.db");
+    db = await openDatabase(
+      path,
       version: 1,
-      onCreate: (Database newDb,int version){
-          newDb.execute("""
-            Create Table items(
+      onCreate: (Database newDb, int version) {
+        newDb.execute("""
+          CREATE TABLE items(
             id INTEGER PRIMARY KEY,
             type TEXT,
             by TEXT,
@@ -38,31 +34,29 @@ class NewsDbProvider implements Source, Cache{
             score INTEGER,
             title TEXT,
             descendants INTEGER
-            )
-          """);
-      }
+          )
+        """);
+      },
     );
   }
-  Future<ItemModel?> fetchItem (int id) async {
-    final maps= await Db.query(
+
+  @override
+  Future<List<int>> fetchTopIds() async => [];
+
+  @override
+  Future<ItemModel?> fetchItem(int id) async {
+    final maps = await db.query(
       "items",
-      columns: null,
-      where: "id= ?",
-      whereArgs:[id],
+      where: "id = ?",
+      whereArgs: [id],
     );
-    if(maps.length >0){
-return ItemModel.fromDb(maps.first);
-    }
+    return maps.isNotEmpty ? ItemModel.fromDb(maps.first) : null;
+  }
 
-    return null;
-
-
+  @override
+  Future<int> addItem(ItemModel item) {
+    return db.insert("items", item.toMap());
+  }
 }
 
-Future <int> addItem (ItemModel item){
-   return  Db.insert("items", item.toMap());
-}
-
-}
-
-NewsDbProvider newsDpProvider= NewsDbProvider();
+final newsDbProvider = NewsDbProvider();

@@ -9,7 +9,7 @@ final _root= 'https://hacker-news.firebaseio.com/v0';
 class NewsApiProvider implements Source{
   Client client = new Client();
 
-  Future<List<int>> fetchTopId() async {
+  Future<List<int>> fetchTopIds() async {
     final response = await client.get(Uri.parse('$_root/topstories.json'));
     final ids = List<int>.from(json.decode(response.body));
     return ids;

@@ -1,6 +1,7 @@
 import 'news_api_provider.dart';
 import 'news_db_provider.dart';
 import '../models/item_models.dart';
+import 'dart:async';
 
 class Repository {
   final List<Source> sources = <Source>[
@@ -34,6 +35,13 @@ class Repository {
 
     return item;
   }
+
+  clearCache() async {
+    for (var cache in caches)  {
+      await cache.clear();
+    }
+  }
+
 }
 
 abstract class Source {
@@ -43,4 +51,5 @@ abstract class Source {
 
 abstract class Cache {
   Future<int> addItem(ItemModel item);
+  clear();
 }

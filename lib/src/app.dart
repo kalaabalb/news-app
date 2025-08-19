@@ -9,6 +9,7 @@ class App extends StatelessWidget {
       child: MaterialApp(
         title: 'News',
         home: NewsList(),
+
       ),
     );
   }

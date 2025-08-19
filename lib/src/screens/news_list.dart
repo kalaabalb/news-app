@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:news/src/models/item_models.dart';
+import 'package:news/src/widgets/refresh.dart';
 import '../blocs/stories_provider.dart';
-import '../widgets/news_list_tile.dart';
 
 class NewsList extends StatelessWidget {
   @override
@@ -12,7 +13,9 @@ class NewsList extends StatelessWidget {
       appBar: AppBar(
         title: const Text('News'),
       ),
-      body: _buildList(bloc),
+      body: Refresh(
+          child:  _buildList(bloc),
+      ),
     );
   }
 
@@ -28,10 +31,48 @@ class NewsList extends StatelessWidget {
         return ListView.builder(
           itemCount: snapshot.data?.length ?? 0,
           itemBuilder: (context, int index) {
-            return NewsListTile(itemId: snapshot.data![index]);
+            final itemId = snapshot.data![index];
+            bloc.fetchItem(itemId);
+
+            return StreamBuilder<ItemModel?>(
+              stream: bloc.items
+                  .asyncMap((map) => map[itemId])
+                  .asyncMap((future) => future),
+              builder: (context, AsyncSnapshot<ItemModel?> itemSnapshot) {
+                if (!itemSnapshot.hasData) {
+                  return const SizedBox();
+                }
+                return buildTile(itemSnapshot.data!);
+              },
+            );
           },
         );
       },
     );
   }
+
+Widget buildTile(ItemModel item){
+  return Column(
+    children: [
+  ListTile(
+    onTap: (){
+      print('${item.id} is the id');
+    },
+  title: Text(item.title),
+  subtitle: Text('${item.score} points'),
+  trailing: Column(
+  children: [
+  Icon(Icons.comment),
+  Text('${item.descendants}')
+  ],
+
+  ),
+
+  )
+    ],
+  );
+
+
+
+}
 }

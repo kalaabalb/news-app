@@ -14,7 +14,7 @@ class NewsDbProvider implements Source, Cache {
 
   Future<void> init() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    final path = join(documentsDirectory.path, "items.db");
+    final path = join(documentsDirectory.path, "items1.db");
     db = await openDatabase(
       path,
       version: 1,
@@ -55,8 +55,16 @@ class NewsDbProvider implements Source, Cache {
 
   @override
   Future<int> addItem(ItemModel item) {
-    return db.insert("items", item.toMap());
+    return db.insert(
+      "items",
+      item.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace, //
+    );
   }
+  clear(){
+  return  db.delete('items') ;
+}
+
 }
 
 final newsDbProvider = NewsDbProvider();

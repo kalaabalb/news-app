@@ -11,7 +11,7 @@ class NewsListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = StoriesProvider.of(context);
-
+    bloc.fetchItem(itemId);
     return StreamBuilder<Map<int, Future<ItemModel?>>>(
       stream: bloc.items,
       builder: (context, snapshot) {
@@ -20,17 +20,35 @@ class NewsListTile extends StatelessWidget {
         }
 
         final futureItem = snapshot.data![itemId];
-
         return FutureBuilder<ItemModel?>(
           future: futureItem,
-          builder: (context, itemSnapshot)  {
-            if (!itemSnapshot.hasData) {
-              return LoadingContainer();
-            }
-            return Text(itemSnapshot.data?.title ?? 'No title');
+          builder: (context, itemSnapshot) {
+            if (!itemSnapshot.hasData) return LoadingContainer();
+            return _buildTile(context, itemSnapshot.data!); // Added _buildTile
           },
         );
       },
+    );
+  }
+
+  // ADD THIS METHOD to NewsListTile class
+  Widget _buildTile(BuildContext context, ItemModel item) {
+    return Column(
+      children: [
+        ListTile(
+          onTap: () {
+            Navigator.pushNamed(context, '${item.id}');
+          },
+          title: Text(item.title),
+          subtitle: Text('${item.score} points'),
+          trailing: Column(
+            children: [
+              Icon(Icons.comment),
+              Text('${item.descendants}')
+            ],
+          ),
+        )
+      ],
     );
   }
 }

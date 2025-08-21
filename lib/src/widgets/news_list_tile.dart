@@ -41,13 +41,14 @@ class NewsListTile extends StatelessWidget {
           },
           title: Text(item.title),
           subtitle: Text('${item.score} points'),
-          trailing: Column(
-            children: [
-              Icon(Icons.comment),
-              Text('${item.descendants}')
-            ],
-          ),
-        )
+          trailing:Row(
+            mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.comment,color: Colors.blue[200],),
+                Text('${item.descendants}')
+              ],
+            ),
+          )
       ],
     );
   }

@@ -28,7 +28,33 @@ class NewsList extends StatelessWidget {
           itemCount: snapshot.data?.length ?? 0,
           itemBuilder: (context, int index) {
             final itemId = snapshot.data![index];
-            return NewsListTile(itemId: itemId); // Use the separate widget
+
+            return Dismissible(
+              key: Key(itemId.toString()),
+                direction: DismissDirection.endToStart,
+              onDismissed: (direction){
+                Navigator.pushNamed(
+                    context,
+                    '/${itemId.toString()}');
+              },
+              background: Container(
+                color: Colors.blue,
+                alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 20),
+                    child: Icon(Icons.arrow_forward, color: Colors.white),
+                  ),
+              ),
+              child: Card(
+                elevation: 5,
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12), // Rounded corners for the card
+                ),
+                child: NewsListTile(itemId: itemId), // Embed the custom NewsListTile here
+              ),
+             // Your custom tile inside the Card
+            ); // Use the separate widget
           },
         );
       },
